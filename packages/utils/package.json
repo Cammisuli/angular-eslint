@@ -15,6 +15,6 @@
     "typescript": "*"
   },
   "dependencies": {
-    "@typescript-eslint/experimental-utils": "4.28.2"
+    "@typescript-eslint/experimental-utils": "5.3.0"
   }
 }
