@@ -18,7 +18,6 @@
 Ensures ASC alphabetical order for `NgModule` metadata arrays for easy visual scanning
 
 - Type: suggestion
-- Category: Best Practices
 - 🔧 Supports autofix (`--fix`)
 
 <br>
@@ -480,6 +479,41 @@ class Test {}
     DeclarationD,
     DeclarationA,
   ]
+})
+class Test {}
+```
+
+<br>
+
+---
+
+<br>
+
+#### Default Config
+
+```json
+{
+  "rules": {
+    "@angular-eslint/sort-ngmodule-metadata-arrays": [
+      "error"
+    ]
+  }
+}
+```
+
+<br>
+
+#### ✅ Valid Code
+
+```ts
+@NgModule({
+  providers: [
+    {
+      provide: 'myprovider',
+      useFactory: myProviderFactory,
+      deps: [TOKEN_Z, ClassX, ClassA, TOKEN_A],
+    },
+  ],
 })
 class Test {}
 ```

@@ -4,7 +4,7 @@ import {
   isNotNullOrUndefined,
   Selectors,
 } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -33,10 +33,9 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `Ensures component's \`${METADATA_PROPERTY_NAME}\` is set to \`${STRATEGY_ON_PUSH}\``,
-      category: 'Best Practices',
       recommended: false,
-      suggestion: true,
     },
+    hasSuggestions: true,
     schema: [],
     messages: {
       preferOnPushComponentChangeDetection: `The component's \`${METADATA_PROPERTY_NAME}\` value should be set to \`${STRATEGY_ON_PUSH}\``,

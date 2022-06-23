@@ -1,5 +1,5 @@
 import { ASTUtils, Selectors } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -12,7 +12,6 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: 'Component selector must be declared',
-      category: 'Best Practices',
       recommended: false,
     },
     schema: [],

@@ -1,5 +1,5 @@
 import { ASTUtils, Selectors } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -15,7 +15,6 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `The ./ and ../ prefix is standard syntax for relative URLs; don't depend on Angular's current ability to do without that prefix. See more at ${STYLE_GUIDE_LINK}`,
-      category: 'Best Practices',
       recommended: false,
     },
     schema: [],
@@ -52,7 +51,9 @@ export default createESLintRule<Options, MessageIds>({
   },
 });
 
-function isUrlInvalid(node: TSESTree.Property | TSESTree.Property['value']) {
+function isUrlInvalid(
+  node: TSESTree.Property['value'] | TSESTree.SpreadElement,
+) {
   return (
     !ASTUtils.isStringLiteral(node) ||
     !RELATIVE_URL_PREFIX_MATCHER.test(node.value)

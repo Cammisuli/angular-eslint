@@ -18,7 +18,6 @@
 Ensures that the click event is accompanied with at least one key event keyup, keydown or keypress.
 
 - Type: suggestion
-- Category: Best Practices
 
 <br>
 
@@ -249,6 +248,60 @@ The rule does not have any configuration options.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
+<br>
+
+---
+
+<br>
+
+#### Default Config
+
+```json
+{
+  "rules": {
+    "@angular-eslint/template/click-events-have-key-events": [
+      "error"
+    ]
+  }
+}
+```
+
+<br>
+
+#### ❌ Invalid Code
+
+```html
+<div (click)="onClick()" [attr.aria-hidden]="ariaHidden"></div>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
+
+<br>
+
+---
+
+<br>
+
+#### Default Config
+
+```json
+{
+  "rules": {
+    "@angular-eslint/template/click-events-have-key-events": [
+      "error"
+    ]
+  }
+}
+```
+
+<br>
+
+#### ❌ Invalid Code
+
+```html
+<div (click)="onClick()" [attr.hidden]="hidden"></div>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
+
 </details>
 
 <br>
@@ -357,10 +410,9 @@ The rule does not have any configuration options.
 #### ✅ Valid Code
 
 ```html
-<div (click)="onClick()" aria-hidden"></div>
+<div (click)="onClick()" aria-hidden></div>
 <div (click)="onClick()" aria-hidden="true"></div>
 <div (click)="onClick()" [attr.aria-hidden]="true"></div>
-<div (click)="onClick()" [attr.aria-hidden]="ariaHidden"></div>
 ```
 
 <br>

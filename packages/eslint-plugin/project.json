@@ -1,5 +1,5 @@
 {
-  "root": "packages/eslint-plugin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "type": "library",
   "targets": {
     "build": {
@@ -16,12 +16,11 @@
       }
     },
     "test": {
-      "executor": "@nrwl/workspace:run-commands",
-      "outputs": ["packages/eslint-plugin/coverage"],
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/eslint-plugin"],
       "options": {
-        "cwd": "packages/eslint-plugin",
-        "parallel": false,
-        "commands": ["npx jest --coverage"]
+        "jestConfig": "packages/eslint-plugin/jest.config.ts",
+        "passWithNoTests": false
       }
     },
     "clean": {
@@ -38,16 +37,6 @@
         "cwd": "packages/eslint-plugin",
         "parallel": false,
         "commands": ["npx tsc -p tsconfig.json --noEmit"]
-      }
-    },
-    "check-configs": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "cwd": "packages/eslint-plugin",
-        "parallel": false,
-        "commands": [
-          "npx jest tests/configs.test.ts --runTestsByPath --runInBand"
-        ]
       }
     },
     "check-rule-docs": {
@@ -67,6 +56,7 @@
     },
     "update-rule-docs": {
       "executor": "@nrwl/workspace:run-commands",
+      "outputs": ["packages/eslint-plugin/docs"],
       "options": {
         "parallel": false,
         "commands": [
@@ -75,5 +65,5 @@
       }
     }
   },
-  "implicitDependencies": []
+  "implicitDependencies": ["bundled-angular-compiler"]
 }

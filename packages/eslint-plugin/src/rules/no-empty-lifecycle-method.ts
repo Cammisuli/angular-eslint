@@ -5,7 +5,7 @@ import {
   Selectors,
   toPattern,
 } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -20,10 +20,9 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: 'Disallows declaring empty lifecycle methods',
-      category: 'Best Practices',
       recommended: 'error',
-      suggestion: true,
     },
+    hasSuggestions: true,
     schema: [],
     messages: {
       noEmptyLifecycleMethod: 'Lifecycle methods should not be empty',

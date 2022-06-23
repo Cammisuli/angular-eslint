@@ -1,4 +1,4 @@
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 
 import { createESLintRule } from '../utils/create-eslint-rule';
 
@@ -14,7 +14,6 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `Disallows usage of \`${FORWARD_REF}\` references for DI`,
-      category: 'Best Practices',
       recommended: false,
     },
     schema: [],

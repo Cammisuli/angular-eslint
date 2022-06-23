@@ -1,6 +1,6 @@
 import { ASTUtils, Selectors } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
-import { ASTUtils as TSESLintASTUtils } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
+import { ASTUtils as TSESLintASTUtils } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [{ readonly allowStatic?: boolean }];
@@ -16,7 +16,6 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `Disallows usage of the \`${METADATA_PROPERTY_NAME}\` metadata property. See more at ${STYLE_GUIDE_LINK}`,
-      category: 'Best Practices',
       recommended: 'error',
     },
     schema: [

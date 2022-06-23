@@ -1,5 +1,5 @@
 import { RuleFixes, isNotNullOrUndefined } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -13,7 +13,6 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `Ensures that \`Pipes\` implement \`${PIPE_TRANSFORM}\` interface`,
-      category: 'Best Practices',
       recommended: 'error',
     },
     fixable: 'code',

@@ -4,8 +4,8 @@ import {
   Selectors,
   SelectorUtils,
 } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
-import { ASTUtils as TSESLintASTUtils } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
+import { ASTUtils as TSESLintASTUtils } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 const VIEW_ENCAPSULATION_SHADOW_DOM = 'ShadowDom';
@@ -31,7 +31,6 @@ export default createESLintRule<SelectorUtils.Options, MessageIds>({
     docs: {
       description: `Component selectors should follow given naming rules. See more at ${STYLE_GUIDE_PREFIX_LINK}, ${STYLE_GUIDE_STYLE_LINK}
       and ${STYLE_GUIDE_TYPE_LINK}.`,
-      category: 'Best Practices',
       recommended: false,
     },
     schema: [

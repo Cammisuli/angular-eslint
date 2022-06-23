@@ -7,6 +7,7 @@ const i18nCustomIdOnAttribute: MessageIds = 'i18nCustomIdOnAttribute';
 const i18nCustomIdOnElement: MessageIds = 'i18nCustomIdOnElement';
 const i18nDuplicateCustomId: MessageIds = 'i18nDuplicateCustomId';
 const suggestAddI18nAttribute: MessageIds = 'suggestAddI18nAttribute';
+const i18nMissingDescription: MessageIds = 'i18nMissingDescription';
 
 export const valid = [
   `
@@ -157,6 +158,53 @@ export const valid = [
       <li>ItemC</li>
     </ul>
   `,
+  {
+    code: `
+      <h1 i18n="An introduction header for this sample">Hello i18n!</h1>
+    `,
+    options: [{ checkId: false, requireDescription: true }],
+  },
+  {
+    code: `
+      <h1 i18n="An introduction header for this sample@@custom-id">Hello i18n!</h1>
+    `,
+    options: [{ requireDescription: true }],
+  },
+  {
+    code: `
+      <h1 i18n="An introduction header for this sample" i18n-title="Title of the sample" title="Translated title">
+        Hello i18n!
+      </h1>
+    `,
+    options: [{ checkId: false, requireDescription: true }],
+  },
+  {
+    code: `
+      <h1 i18n="An introduction header for this sample@@custom-id" i18n-title="Title of the sample@@title-id" title="Translated title">
+        Hello i18n!
+      </h1>
+    `,
+    options: [{ requireDescription: true }],
+  },
+  {
+    code: `
+      <img 
+        [src]="logo"
+        i18n-title="Logo for the app"
+        title="App Logo"
+        i18n-alt="Translated alt logo"
+        alt="Alternate logo"
+      /> 
+    `,
+    options: [{ checkId: false, requireDescription: true }],
+  },
+  {
+    code: `
+      <span i18n="@@custom-id">Some text to translate</span>
+      <span i18n="@@custom-id">Some text to translate</span>
+    `,
+    options: [{ checkDuplicateId: false }],
+  },
 ];
 
 export const invalid = [
@@ -450,5 +498,57 @@ export const invalid = [
         </div>
       </div>
     `,
+  }),
+  convertAnnotatedSourceToFailureCase({
+    description: 'should fail if i18n description is missing',
+    annotatedSource: `
+      <h1 i18n>Hello</h1>
+      ~~~~~~~~~~~~~~~~~~~
+    `,
+    messageId: i18nMissingDescription,
+    options: [{ checkId: false, requireDescription: true }],
+  }),
+  convertAnnotatedSourceToFailureCase({
+    description:
+      'should fail if i18n description is missing, despite an ID being provided',
+    annotatedSource: `
+      <h1 i18n="@@custom-id">Hello</h1>
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    `,
+    messageId: i18nMissingDescription,
+    options: [{ requireDescription: true }],
+  }),
+  convertAnnotatedSourceToFailureCase({
+    description: 'should fail if i18n-<attr> description is missing',
+    annotatedSource: `
+      <span i18n="A balloon that displays data" data-balloon="Translated title" i18n-data-balloon>
+                                                ~~~~~~~~~~~~  
+        Hello
+      </span>
+    `,
+    messageId: i18nMissingDescription,
+    options: [{ checkId: false, requireDescription: true }],
+  }),
+  convertAnnotatedSourceToFailureCase({
+    description:
+      'should fail if i18n-<attr> description is missing, despite an ID being provided',
+    annotatedSource: `
+      <h1 i18n="Title of the sample@@custom-id" i18n-title="@@title-id" title="Translated title">
+                                                                        ~~~~~
+        Hello
+      </h1>
+    `,
+    messageId: i18nMissingDescription,
+    options: [{ requireDescription: true }],
+  }),
+  convertAnnotatedSourceToFailureCase({
+    description:
+      'should fail if i18n-<attr> description is missing when there is no text content to translate',
+    annotatedSource: `
+      <img [src]="logo" i18n-title title="App Logo" i18n-alt="App logo" alt="App Logo"/>
+                                   ~~~~~
+    `,
+    messageId: i18nMissingDescription,
+    options: [{ requireDescription: true, checkId: false }],
   }),
 ];

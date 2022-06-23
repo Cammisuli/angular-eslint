@@ -3,7 +3,7 @@ import {
   Selectors,
   toHumanReadableText,
 } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [{ readonly prefixes: readonly string[] }];
@@ -17,7 +17,6 @@ export default createESLintRule<Options, MessageIds>({
     docs: {
       description:
         'Ensures that input bindings, including aliases, are not named or prefixed by the configured disallowed prefixes',
-      category: 'Best Practices',
       recommended: false,
     },
     schema: [

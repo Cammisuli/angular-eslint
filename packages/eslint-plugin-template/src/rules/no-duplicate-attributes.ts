@@ -3,7 +3,7 @@ import type {
   TmplAstBoundEvent,
   TmplAstElement,
   TmplAstTextAttribute,
-} from '@angular/compiler';
+} from '@angular-eslint/bundled-angular-compiler';
 import {
   createESLintRule,
   getTemplateParserServices,
@@ -22,10 +22,9 @@ export default createESLintRule<Options, MessageIds>({
     docs: {
       description:
         'Ensures that there are no duplicate input properties or output event listeners',
-      category: 'Possible Errors',
       recommended: false,
-      suggestion: true,
     },
+    hasSuggestions: true,
     schema: [
       {
         type: 'object',
@@ -49,7 +48,7 @@ export default createESLintRule<Options, MessageIds>({
     const parserServices = getTemplateParserServices(context);
 
     return {
-      Element({ inputs, outputs, attributes }: TmplAstElement) {
+      Element$1({ inputs, outputs, attributes }: TmplAstElement) {
         const duplicateInputsAndAttributes = findDuplicates([
           ...inputs,
           ...attributes,

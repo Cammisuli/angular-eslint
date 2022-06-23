@@ -27,8 +27,8 @@ import bananaInBox, {
 import clickEventsHaveKeyEvents, {
   RULE_NAME as clickEventsHaveKeyEventsRuleName,
 } from './rules/click-events-have-key-events';
-import conditionalСomplexity, {
-  RULE_NAME as conditionalСomplexityRuleName,
+import conditionalComplexity, {
+  RULE_NAME as conditionalComplexityRuleName,
 } from './rules/conditional-complexity';
 import cyclomaticComplexity, {
   RULE_NAME as cyclomaticComplexityRuleName,
@@ -60,6 +60,9 @@ import noPositiveTabindex, {
 import useTrackByFunction, {
   RULE_NAME as useTrackByFunctionRuleName,
 } from './rules/use-track-by-function';
+import buttonHasType, {
+  RULE_NAME as buttonHasTypeRuleName,
+} from './rules/button-has-type';
 
 export default {
   configs: {
@@ -78,7 +81,7 @@ export default {
     [accessibilityTableScopeRuleName]: accessibilityTableScope,
     [accessibilityValidAriaRuleName]: accessibilityValidAria,
     [bananaInBoxRuleName]: bananaInBox,
-    [conditionalСomplexityRuleName]: conditionalСomplexity,
+    [conditionalComplexityRuleName]: conditionalComplexity,
     [clickEventsHaveKeyEventsRuleName]: clickEventsHaveKeyEvents,
     [cyclomaticComplexityRuleName]: cyclomaticComplexity,
     [eqeqeqRuleName]: eqeqeq,
@@ -92,5 +95,6 @@ export default {
     [noNegatedAsyncRuleName]: noNegatedAsync,
     [noPositiveTabindexRuleName]: noPositiveTabindex,
     [useTrackByFunctionRuleName]: useTrackByFunction,
+    [buttonHasTypeRuleName]: buttonHasType,
   },
 };

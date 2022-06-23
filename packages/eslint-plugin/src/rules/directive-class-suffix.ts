@@ -3,7 +3,7 @@ import {
   Selectors,
   toHumanReadableText,
 } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [{ readonly suffixes: readonly string[] }];
@@ -19,7 +19,6 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `Classes decorated with @Directive must have suffix "Directive" (or custom) in their name. See more at ${STYLE_GUIDE_LINK}`,
-      category: 'Best Practices',
       recommended: 'error',
     },
     schema: [

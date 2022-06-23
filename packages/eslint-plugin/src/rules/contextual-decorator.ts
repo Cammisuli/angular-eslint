@@ -1,5 +1,5 @@
 import { ASTUtils } from '@angular-eslint/utils';
-import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -12,7 +12,6 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: 'Ensures that classes use contextual decorators in its body',
-      category: 'Best Practices',
       recommended: false,
     },
     schema: [],
@@ -24,10 +23,10 @@ export default createESLintRule<Options, MessageIds>({
   defaultOptions: [],
   create(context) {
     return {
-      'MethodDefinition[kind=/^(get|set|method)$/], ClassProperty, TSParameterProperty'(
+      'MethodDefinition[kind=/^(get|set|method)$/], PropertyDefinition, TSParameterProperty'(
         node:
           | TSESTree.MethodDefinition
-          | TSESTree.ClassProperty
+          | TSESTree.PropertyDefinition
           | TSESTree.TSParameterProperty,
       ) {
         validateNode(context, node);
@@ -40,7 +39,7 @@ function validateNode(
   context: Readonly<TSESLint.RuleContext<string, readonly unknown[]>>,
   node:
     | TSESTree.MethodDefinition
-    | TSESTree.ClassProperty
+    | TSESTree.PropertyDefinition
     | TSESTree.TSParameterProperty,
 ): void {
   if (!node.decorators?.length) {

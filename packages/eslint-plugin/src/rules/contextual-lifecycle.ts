@@ -1,5 +1,5 @@
 import { ASTUtils, Selectors } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -13,7 +13,6 @@ export default createESLintRule<Options, MessageIds>({
     docs: {
       description:
         'Ensures that lifecycle methods are used in a correct context',
-      category: 'Possible Errors',
       recommended: 'error',
     },
     schema: [],

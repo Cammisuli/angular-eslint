@@ -1,10 +1,9 @@
-import type { ParseSourceSpan, TmplAstElement } from '@angular/compiler';
 import type {
-  ESLintUtils,
-  TSESLint,
-  TSESTree,
-} from '@typescript-eslint/experimental-utils';
-import { applyDefault } from '@typescript-eslint/experimental-utils/dist/eslint-utils';
+  ParseSourceSpan,
+  TmplAstElement,
+} from '@angular-eslint/bundled-angular-compiler';
+import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
+import { ESLintUtils } from '@typescript-eslint/utils';
 
 /**
  * We need to patch the RuleCreator in order to preserve the defaultOptions
@@ -20,7 +19,7 @@ const patchedRuleCreator: typeof ESLintUtils.RuleCreator = (urlCreator) => {
       }),
       defaultOptions,
       create(context) {
-        const optionsWithDefault = applyDefault(
+        const optionsWithDefault = ESLintUtils.applyDefault(
           defaultOptions,
           context.options,
         );
@@ -30,9 +29,11 @@ const patchedRuleCreator: typeof ESLintUtils.RuleCreator = (urlCreator) => {
   };
 };
 
+patchedRuleCreator.withoutDocs = ESLintUtils.RuleCreator.withoutDocs;
+
 export const createESLintRule = patchedRuleCreator(
   (ruleName) =>
-    `https://github.com/angular-eslint/angular-eslint/blob/master/packages/eslint-plugin/docs/rules/${ruleName}.md`,
+    `https://github.com/angular-eslint/angular-eslint/blob/master/packages/eslint-plugin-template/docs/rules/${ruleName}.md`,
 );
 
 interface ParserServices {

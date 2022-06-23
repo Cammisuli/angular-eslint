@@ -6,10 +6,13 @@ import type {
   TmplAstIcu,
   TmplAstText,
   TmplAstTextAttribute,
-} from '@angular/compiler';
-import { TmplAstBoundText, TmplAstElement } from '@angular/compiler';
-import type { Message } from '@angular/compiler/src/i18n/i18n_ast';
-import type { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+} from '@angular-eslint/bundled-angular-compiler';
+import {
+  TmplAstBoundText,
+  TmplAstElement,
+} from '@angular-eslint/bundled-angular-compiler';
+import type { Message } from '@angular-eslint/bundled-angular-compiler';
+import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
 import {
   createESLintRule,
   getTemplateParserServices,
@@ -51,10 +54,12 @@ type Options = [
   {
     readonly boundTextAllowedPattern?: string;
     readonly checkAttributes?: boolean;
+    readonly checkDuplicateId?: boolean;
     readonly checkId?: boolean;
     readonly checkText?: boolean;
     readonly ignoreAttributes?: readonly string[];
     readonly ignoreTags?: readonly string[];
+    readonly requireDescription?: boolean;
   },
 ];
 export type MessageIds =
@@ -63,7 +68,8 @@ export type MessageIds =
   | 'i18nCustomIdOnAttribute'
   | 'i18nCustomIdOnElement'
   | 'i18nDuplicateCustomId'
-  | 'suggestAddI18nAttribute';
+  | 'suggestAddI18nAttribute'
+  | 'i18nMissingDescription';
 type StronglyTypedElement = Omit<TmplAstElement, 'i18n'> & {
   i18n: Message;
   parent?: AST;
@@ -86,6 +92,7 @@ export const RULE_NAME = 'i18n';
 const DEFAULT_OPTIONS: Options[number] = {
   checkAttributes: true,
   checkId: true,
+  checkDuplicateId: true,
   checkText: true,
   ignoreAttributes: [...DEFAULT_ALLOWED_ATTRIBUTES],
 };
@@ -95,6 +102,8 @@ const STYLE_GUIDE_LINK_ICU = `${STYLE_GUIDE_LINK}#mark-plurals-and-alternates-fo
 const STYLE_GUIDE_LINK_TEXTS = `${STYLE_GUIDE_LINK}#mark-text-for-translations`;
 const STYLE_GUIDE_LINK_CUSTOM_IDS = `${STYLE_GUIDE_LINK}#manage-marked-text-with-custom-ids`;
 const STYLE_GUIDE_LINK_UNIQUE_CUSTOM_IDS = `${STYLE_GUIDE_LINK}#define-unique-custom-ids`;
+const STYLE_GUIDE_LINK_COMMON_PREPARE = `${STYLE_GUIDE_LINK}-common-prepare`;
+const STYLE_GUIDE_LINK_METADATA_FOR_TRANSLATION = `${STYLE_GUIDE_LINK_COMMON_PREPARE}#i18n-metadata-for-translation`;
 
 export default createESLintRule<Options, MessageIds>({
   name: RULE_NAME,
@@ -107,11 +116,10 @@ export default createESLintRule<Options, MessageIds>({
         'texts. ' +
         'Can also check for texts without i18n attribute, elements that do not ' +
         'use custom ID (@@) feature and duplicate custom IDs',
-      category: 'Best Practices',
       recommended: false,
-      suggestion: true,
     },
     fixable: 'code',
+    hasSuggestions: true,
     schema: [
       {
         type: 'object',
@@ -122,6 +130,10 @@ export default createESLintRule<Options, MessageIds>({
           checkAttributes: {
             type: 'boolean',
             default: DEFAULT_OPTIONS.checkAttributes,
+          },
+          checkDuplicateId: {
+            type: 'boolean',
+            default: DEFAULT_OPTIONS.checkDuplicateId,
           },
           checkId: {
             type: 'boolean',
@@ -144,6 +156,10 @@ export default createESLintRule<Options, MessageIds>({
               type: 'string',
             },
           },
+          requireDescription: {
+            type: 'boolean',
+            default: DEFAULT_OPTIONS.requireDescription,
+          },
         },
         additionalProperties: false,
       },
@@ -155,6 +171,7 @@ export default createESLintRule<Options, MessageIds>({
       i18nCustomIdOnElement: `Missing custom ID on element. See more at ${STYLE_GUIDE_LINK_CUSTOM_IDS}`,
       i18nDuplicateCustomId: `Duplicate custom ID "@@{{customId}}". See more at ${STYLE_GUIDE_LINK_UNIQUE_CUSTOM_IDS}`,
       suggestAddI18nAttribute: 'Add the `i18n` attribute',
+      i18nMissingDescription: `Missing i18n description on element. See more at ${STYLE_GUIDE_LINK_METADATA_FOR_TRANSLATION}`,
     },
   },
   defaultOptions: [DEFAULT_OPTIONS],
@@ -165,9 +182,11 @@ export default createESLintRule<Options, MessageIds>({
         boundTextAllowedPattern,
         checkAttributes,
         checkId,
+        checkDuplicateId,
         checkText,
         ignoreAttributes,
         ignoreTags,
+        requireDescription,
       },
     ],
   ) {
@@ -184,7 +203,7 @@ export default createESLintRule<Options, MessageIds>({
     const collectedCustomIds = new Map<string, readonly ParseSourceSpan[]>();
 
     function handleElement({
-      i18n: { customId },
+      i18n: { description, customId },
       name,
       parent,
       sourceSpan,
@@ -193,17 +212,26 @@ export default createESLintRule<Options, MessageIds>({
         return;
       }
 
-      if (!isEmpty(customId)) {
-        const sourceSpans = collectedCustomIds.get(customId) ?? [];
-        collectedCustomIds.set(customId, [...sourceSpans, sourceSpan]);
-        return;
+      const loc = parserServices.convertNodeSourceSpanToLoc(sourceSpan);
+
+      if (checkId) {
+        if (isEmpty(customId)) {
+          context.report({
+            messageId: 'i18nCustomIdOnElement',
+            loc,
+          });
+        } else {
+          const sourceSpans = collectedCustomIds.get(customId) ?? [];
+          collectedCustomIds.set(customId, [...sourceSpans, sourceSpan]);
+        }
       }
 
-      const loc = parserServices.convertNodeSourceSpanToLoc(sourceSpan);
-      context.report({
-        messageId: 'i18nCustomIdOnElement',
-        loc,
-      });
+      if (requireDescription && isEmpty(description)) {
+        context.report({
+          messageId: 'i18nMissingDescription',
+          loc,
+        });
+      }
     }
 
     function handleTextAttribute({
@@ -222,18 +250,28 @@ export default createESLintRule<Options, MessageIds>({
         keySpan ?? sourceSpan,
       );
 
-      if (checkId && i18n) {
-        const { customId } = i18n;
+      if (i18n) {
+        const { customId, description } = i18n;
 
-        if (isEmpty(customId)) {
+        if (checkId) {
+          if (isEmpty(customId)) {
+            context.report({
+              messageId: 'i18nCustomIdOnAttribute',
+              loc: keyOrSourceSpanLoc,
+              data: { attributeName },
+            });
+          } else {
+            const sourceSpans = collectedCustomIds.get(customId) ?? [];
+            collectedCustomIds.set(customId, [...sourceSpans, sourceSpan]);
+          }
+        }
+
+        if (requireDescription && isEmpty(description)) {
           context.report({
-            messageId: 'i18nCustomIdOnAttribute',
+            messageId: 'i18nMissingDescription',
             loc: keyOrSourceSpanLoc,
             data: { attributeName },
           });
-        } else {
-          const sourceSpans = collectedCustomIds.get(customId) ?? [];
-          collectedCustomIds.set(customId, [...sourceSpans, sourceSpan]);
         }
       }
 
@@ -286,18 +324,20 @@ export default createESLintRule<Options, MessageIds>({
     }
 
     function reportDuplicatedCustomIds() {
-      for (const [customId, sourceSpans] of collectedCustomIds) {
-        if (sourceSpans.length <= 1) {
-          break;
-        }
+      if (checkDuplicateId) {
+        for (const [customId, sourceSpans] of collectedCustomIds) {
+          if (sourceSpans.length <= 1) {
+            break;
+          }
 
-        for (const sourceSpan of sourceSpans) {
-          const loc = parserServices.convertNodeSourceSpanToLoc(sourceSpan);
-          context.report({
-            messageId: 'i18nDuplicateCustomId',
-            loc,
-            data: { customId },
-          });
+          for (const sourceSpan of sourceSpans) {
+            const loc = parserServices.convertNodeSourceSpanToLoc(sourceSpan);
+            context.report({
+              messageId: 'i18nDuplicateCustomId',
+              loc,
+              data: { customId },
+            });
+          }
         }
       }
 
@@ -305,20 +345,20 @@ export default createESLintRule<Options, MessageIds>({
     }
 
     return {
-      ...(checkId && {
-        'Element[i18n]'(node: StronglyTypedElement) {
+      ...((checkId || requireDescription) && {
+        'Element$1[i18n]'(node: StronglyTypedElement) {
           handleElement(node);
         },
       }),
-      ...((checkAttributes || checkId) && {
-        [`Element > TextAttribute[value=${PL_PATTERN}]`](
+      ...((checkAttributes || checkId || requireDescription) && {
+        [`Element$1 > TextAttribute[value=${PL_PATTERN}]`](
           node: StronglyTypedTextAttribute,
         ) {
           handleTextAttribute(node);
         },
       }),
       ...(checkText && {
-        [`BoundText, Icu, Text[value=${PL_PATTERN}]`](
+        [`BoundText, Icu$1, Text$3[value=${PL_PATTERN}]`](
           node: StronglyTypedBoundTextOrIcuOrText,
         ) {
           handleBoundTextOrIcuOrText(node);
@@ -401,7 +441,11 @@ function isBooleanLike(value: string): value is 'false' | 'true' {
 }
 
 function isEmpty(value: string) {
-  return value.trim().length === 0;
+  if (value) {
+    return value.trim().length === 0;
+  }
+
+  return true;
 }
 
 function isNumeric(value: string) {

@@ -4,7 +4,7 @@ import {
   Selectors,
   SelectorUtils,
 } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 export const RULE_NAME = 'directive-selector';
@@ -20,7 +20,6 @@ export default createESLintRule<SelectorUtils.Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `Directive selectors should follow given naming rules. See more at ${STYLE_GUIDE_STYLE_TYPE_LINK} and ${STYLE_GUIDE_PREFIX_LINK}.`,
-      category: 'Best Practices',
       recommended: false,
     },
     schema: [

@@ -1,6 +1,6 @@
 import { Selectors } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
-import { ASTUtils as TSESLintASTUtils } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
+import { ASTUtils as TSESLintASTUtils } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -14,7 +14,6 @@ export default createESLintRule<Options, MessageIds>({
     docs: {
       description:
         'Ensures ASC alphabetical order for `NgModule` metadata arrays for easy visual scanning',
-      category: 'Best Practices',
       recommended: false,
     },
     fixable: 'code',
@@ -27,7 +26,7 @@ export default createESLintRule<Options, MessageIds>({
   defaultOptions: [],
   create(context) {
     return {
-      [`${Selectors.MODULE_CLASS_DECORATOR} Property ArrayExpression`]({
+      [`${Selectors.MODULE_CLASS_DECORATOR} Property[key.name!="deps"] > ArrayExpression`]({
         elements,
       }: TSESTree.ArrayExpression) {
         const unorderedNodes = elements

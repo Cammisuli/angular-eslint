@@ -4,7 +4,7 @@ import {
   isNotNullOrUndefined,
   Selectors,
 } from '@angular-eslint/utils';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { createESLintRule } from '../utils/create-eslint-rule';
 
 type Options = [];
@@ -20,9 +20,9 @@ export default createESLintRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: `Disallows using \`${VIEW_ENCAPSULATION_NONE}\``,
-      category: 'Best Practices',
       recommended: false,
     },
+    hasSuggestions: true,
     schema: [],
     messages: {
       useComponentViewEncapsulation: `Using \`${VIEW_ENCAPSULATION_NONE}\` makes your styles global, which may have an unintended effect`,

@@ -18,7 +18,6 @@
 Enforces alternate text for elements which require the alt, aria-label, aria-labelledby attributes.
 
 - Type: suggestion
-- Category: Best Practices
 
 <br>
 
@@ -410,7 +409,7 @@ The rule does not have any configuration options.
 #### ✅ Valid Code
 
 ```html
-<area aria-label="foo"></area>
+<area aria-label="foo" />
 ```
 
 <br>
@@ -436,7 +435,7 @@ The rule does not have any configuration options.
 #### ✅ Valid Code
 
 ```html
-<area aria-labelledby="id1"></area>
+<area aria-labelledby="id1" />
 ```
 
 <br>
@@ -462,7 +461,7 @@ The rule does not have any configuration options.
 #### ✅ Valid Code
 
 ```html
-<area alt="This is descriptive!"></area>
+<area alt="This is descriptive!" />
 ```
 
 <br>

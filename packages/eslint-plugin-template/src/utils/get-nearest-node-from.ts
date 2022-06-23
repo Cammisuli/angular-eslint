@@ -1,9 +1,13 @@
-import type { AST } from '@angular/compiler';
-import type { Node } from '@angular/compiler/src/render3/r3_ast';
-import type { TSESTree } from '@typescript-eslint/experimental-utils';
+import type {
+  AST,
+  TmplAstNode,
+} from '@angular-eslint/bundled-angular-compiler';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { AST_NODE_TYPES } from '@typescript-eslint/types';
 
-type ASTOrNodeWithParent = (AST | Node) & { parent?: ASTOrNodeWithParent };
+type ASTOrNodeWithParent = (AST | TmplAstNode) & {
+  parent?: ASTOrNodeWithParent;
+};
 
 function isProgram(node: unknown): node is TSESTree.Program {
   return (node as { type?: string }).type === AST_NODE_TYPES.Program;

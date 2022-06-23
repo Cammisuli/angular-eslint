@@ -18,7 +18,6 @@
 The conditional complexity should not exceed a rational limit
 
 - Type: suggestion
-- Category: Best Practices
 
 <br>
 
@@ -291,6 +290,32 @@ interface Options {
 <div [class.mw-100]="test === 7"></div>
 <div [attr.aria-label]="testing === 'ab' ? 'bc' : 'de'"></div>
 <div [attr.custom-attr]="'test345' | appPipe"></div>
+```
+
+<br>
+
+---
+
+<br>
+
+#### Default Config
+
+```json
+{
+  "rules": {
+    "@angular-eslint/template/conditional-complexity": [
+      "error"
+    ]
+  }
+}
+```
+
+<br>
+
+#### ✅ Valid Code
+
+```html
+<div class="col" id="one-two-three-four-five-six-seven-eight-{{9}}"></div>
 ```
 
 <br>
